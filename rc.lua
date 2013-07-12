@@ -13,6 +13,7 @@ require("utility")
 require("awful/widget/calendar2")
 require("blingbling")
 require("weather")
+
 os.setlocale('ru_RU.UTF-8') --}}}
 
 -- {{{ Error handling
@@ -208,6 +209,43 @@ weather.addWeather(weatherwidget, "voronezh", 3600)
 weather.addWeather(imgweaterwidget, "voronezh", 3600)
 --}-------------------------------------------------------------------------------------------------------------------------------------------
 
+--{-------------------------------------------------------------------------------------------------------------------------------------------
+--battery
+mybattmon = widget({ type = "textbox", name = "mybattmon", align = "right" })
+function battery_status ()
+    local output={} --output buffer
+    local fd=io.popen("acpitool -b", "r") --list present batteries
+    local line=fd:read()
+    while line do --there might be several batteries.
+        --local battery_num = string.match(line, "Battery \#(%d+)")
+        local battery_load = string.match(line,"(%d+\.%d+)")
+        --local time_rem = string.match(line, "(%d+\:%d+)\:%d+")
+	local discharging
+	if string.match(line, "Discharging")=="Discharging" then --discharging: always red
+		discharging="<span color=\"#FF0000\"> BAT "
+	else --charging
+		discharging="<span color=\"#008000\"> AC "
+	end
+            table.insert(output,discharging..battery_load.."%</span>")
+        line=fd:read() --read next line
+    end
+    return table.concat(output," ") --FIXME: better separation for several batteries. maybe a pipe?
+end
+mybattmon.text = " " .. battery_status() .. " "
+my_battmon_timer=timer({timeout=30})
+my_battmon_timer:add_signal("timeout", function()
+    --mytextbox.text = " " .. os.date() .. " "
+    mybattmon.text = " " .. battery_status() .. " "
+end)
+my_battmon_timer:start()
+--}-------------------------------------------------------------------------------------------------------------------------------------------
+
+--{-------------------------------------------------------------------------------------------------------------------------------------------
+
+--}-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
     mypromptbox[s] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
@@ -242,6 +280,7 @@ for s = 1, screen.count() do
         mytextclock, sp,
         weatherwidget, imgweaterwidget ,sp,
         my_volume.widget,volume_label,sp,
+        mybattmon, sp,
         s == 1 and mysystray or nil,
         mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft
