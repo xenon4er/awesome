@@ -87,8 +87,8 @@ function wthIcon(wthtype, sunrise, sunset)
 end
 
 -- Just formatting the data a little to display it in a notification
-function wthText(wthtype, rhum, winddir, wind)
-	return wthtype.."\n".. "Влажность:" ..rhum.."\n".. "Ветер:" .. winddir .. " м/с"
+function wthText(wthtype, rhum, winddir, wind,city)
+	return wthtype.."\n".. "Влажность:" ..rhum.."\n".. "Ветер:" .. winddir .. " м/с" .."\n\n"..city 
 end
 
 -- Updating weather data
@@ -102,7 +102,7 @@ function updateWeather(city)
 	end
 
 	if w.wthinfo then
-		w.wthinfo.box.widgets[2].text = wthText(w.weather.wthtype, w.weather.rhum, w.weather.winddir )
+		w.wthinfo.box.widgets[2].text = wthText(w.weather.wthtype, w.weather.rhum, w.weather.winddir,city )
 		w.wthinfo.box.widgets[1].image = capi.image(wthIcon(w.weather.wthtype, w.weather.sunrise, w.weather.sunset))
 	end
 end
@@ -129,7 +129,7 @@ function addWeather(widget, city, timeout)
 	widget:add_signal("mouse::enter",	function() local w = weatherbase[city]
 													w.wthinfo = naughty.notify({
 														--title = w.weather.cityname,
-														text = wthText(w.weather.wthtype, w.weather.rhum, w.weather.winddir, w.weather.wind),
+														text = wthText(w.weather.wthtype, w.weather.rhum, w.weather.winddir, w.weather.wind,city),
 														icon = wthIcon(w.weather.wthtype, w.weather.sunrise, w.weather.sunset),
 														timeout = 0,
 														hover_timeout = 0.5,

@@ -11,7 +11,7 @@ require("debian.menu")
 require("beautiful") -- Темы
 require("utility")
 require("awful/widget/calendar2")
-require("blingbling")
+--require("blingbling")
 require("weather")
 os.setlocale('ru_RU.UTF-8') --}}}
 
@@ -240,7 +240,7 @@ for s = 1, screen.count() do
         mylayoutbox[s], sp, 
         kbdwidget ,sp,
         mytextclock, sp,
-        weatherwidget, sp,
+        weatherwidget, imgweaterwidget ,sp,
         my_volume.widget,volume_label,sp,
         s == 1 and mysystray or nil,
         mytasklist[s],
