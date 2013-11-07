@@ -80,7 +80,7 @@ layouts =
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[1])
+    tags[s] = awful.tag({ "ter", "web", "spy", "mes", 5, 6, 7, 8, 9 }, s, layouts[1])
 end
 
 --awful.layout.set(layouts[10], tags[1][2])
@@ -88,6 +88,12 @@ end
 --awful.layout.set(layouts[3], tags[1][3])
 
 -- }}}
+
+---{{{ get path to img of application
+function get_path(app)
+  return "/usr/share/icons/hicolor/24x24/apps/"..app..".png"
+end
+---}}}
 
 -- {{{ Menu
 -- Create a laucher widget and a main menu
@@ -101,7 +107,19 @@ myawesomemenu = {
    { "reboot" , "sudo reboot"}
 }
 
+application = {
+   { "google-chrome", "google-chrome", get_path("google-chrome") },
+   { "skype", "skype", get_path("skype")},
+   { "spyder", "spyder"},
+   { "pidgin" , "pidgin", get_path("pidgin")},
+   { "pdf-reader","evince", get_path("evince")},
+   { "thunderbird","thunderbird"},
+   { "krusader","krusader","/usr/share/icons/hicolor/22x22/apps/krusader_shield.png"}
+}
+
+
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+              			    { "application", application},
                                     { "Debian menu", debian.menu.Debian_menu.Debian },
                                     { "open terminal", terminal },
                                     
@@ -249,7 +267,7 @@ my_battmon_timer:start()
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
     mypromptbox[s] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
-    -- Create an imagebox widget which will contains an icon indicating which layout we're using.
+    -- Create an imathunderbirdgebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     mylayoutbox[s] = awful.widget.layoutbox(s)
     mylayoutbox[s]:buttons(awful.util.table.join(
@@ -262,9 +280,10 @@ for s = 1, screen.count() do
 
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist(function(c)
+    						
                                               return awful.widget.tasklist.label.currenttags(c, s)
                                           end, mytasklist.buttons)
-
+	
     -- Create the wibox
     mywibox[s] = awful.wibox({ position = "top", screen = s })
     -- Add widgets to the wibox - order matters
@@ -285,6 +304,7 @@ for s = 1, screen.count() do
         mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft
     }
+    
 end
 -- }}}
 
@@ -453,8 +473,14 @@ awful.rules.rules = {
     { rule = { class = "gimp" },
       properties = { floating = true } },
     -- Set Firefox to always map on tags number 2 of screen 1.
-    { rule = { class = "google-chrome" },
+    { rule = { class = "Google-chrome" },
        properties = { tag = tags[1][2] } },
+    { rule = { class = "Spyder" },
+       properties = { tag = tags[1][3] } },
+    { rule = { class = "Pidgin" },
+       properties = { tag = tags[1][4] } },
+    { rule = { class = "Skype" },
+       properties = { tag = tags[1][4] } },
 }
 -- }}}
 
@@ -500,7 +526,7 @@ function run_once(prg)
 run_once("nm-applet")
 run_once("numlockx on")
 run_once("gnome-settings-daemon")
-
+run_once("xmodmap .xmodmaprc")
 awful.util.spawn_with_shell("awsetbg -r /home/alex/wallpaper/")
 awful.util.spawn_with_shell("kbdd")
 
