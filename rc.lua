@@ -3,7 +3,7 @@ require("awful")
 require("awful.autofocus")
 require("awful.rules")
 -- Theme handling library
-require("beautiful")
+--require("beautiful")
 -- Notification library
 require("naughty")
 -- Load Debian menu entries
@@ -209,9 +209,9 @@ mytasklist.buttons = awful.util.table.join(
 volume_label = widget ({ type = "textbox" })
 volume_label.text = "♫"
 my_volume=blingbling.volume.new()
-my_volume:set_height(18)
-my_volume:set_v_margin(4)
-my_volume:set_width(20)
+my_volume:set_height(20)
+my_volume:set_v_margin(8)
+my_volume:set_width(35)
 my_volume:update_master()
 my_volume:set_master_control()
 my_volume:set_bar(true)
@@ -371,6 +371,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
     awful.key({ modkey, "Control" }, "n", awful.client.restore),
     
+    
     awful.key({ modkey}, "g", function () awful.util.spawn("google-chrome") end),
     awful.key({ modkey}, "d", function () awful.util.spawn("spyder") end),
     awful.key({ modkey}, "s", function () awful.util.spawn("skype") end),
@@ -473,9 +474,10 @@ awful.rules.rules = {
     { rule = { class = "gimp" },
       properties = { floating = true } },
     -- Set Firefox to always map on tags number 2 of screen 1.
-    { rule = { class = "Google-chrome" },
-       properties = { tag = tags[1][2] } },
-    { rule = { class = "Spyder" },
+    { rule = { class = "Google-chrome" }, 
+       properties = { tag = tags[1][2] },
+       callback = awful.titlebar.add  },
+    { rule = { class = "Spyder" }, 
        properties = { tag = tags[1][3] } },
     { rule = { class = "Pidgin" },
        properties = { tag = tags[1][4] } },
@@ -489,7 +491,11 @@ awful.rules.rules = {
 client.add_signal("manage", function (c, startup)
     -- Add a titlebar
     --awful.titlebar.add(c, { modkey = modkey })
-
+	if c.titlebar then 
+		awful.titlebar.remove(c)
+    else 
+    	awful.titlebar.add(c, {modkey = modkey, height=18})
+    end    
     -- Enable sloppy focus
     c:add_signal("mouse::enter", function(c)
         if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
