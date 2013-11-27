@@ -114,7 +114,8 @@ application = {
    { "pidgin" , "pidgin", get_path("pidgin")},
    { "pdf-reader","evince", get_path("evince")},
    { "thunderbird","thunderbird"},
-   { "krusader","krusader","/usr/share/icons/hicolor/22x22/apps/krusader_shield.png"}
+   { "krusader","krusader","/usr/share/icons/hicolor/22x22/apps/krusader_shield.png"},
+   { "system monitor", "gnome-system-monitor"}
 }
 
 
@@ -373,8 +374,8 @@ globalkeys = awful.util.table.join(
     
     
     awful.key({ modkey}, "g", function () awful.util.spawn("google-chrome") end),
-    awful.key({ modkey}, "d", function () awful.util.spawn("spyder") end),
-    awful.key({ modkey}, "s", function () awful.util.spawn("skype") end),
+    awful.key({ modkey}, "s", function () awful.util.spawn("spyder") end),
+    --awful.key({ modkey}, "s", function () awful.util.spawn("skype") end),
     awful.key({modkey, "Control"}, "n", function() awful.util.spawn("awsetbg -r /home/alex/wallpaper/") end),
     
     -- Prompt
@@ -517,8 +518,14 @@ client.add_signal("manage", function (c, startup)
     end
 end)
 
-client.add_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.add_signal("focus", function(c) 
+						c.border_color = beautiful.border_focus 
+						c.opacity = 1 
+					end )
+client.add_signal("unfocus", function(c) 
+						c.border_color = beautiful.border_normal 
+						c.opacity = 0.8 
+					end )
 -- }}}
 
 --{{---|wallpaper|----------
@@ -530,6 +537,7 @@ function run_once(prg)
 --{{---|autorun |----------------------------------------------------------------------------
 
 run_once("nm-applet")
+run_once("xcompmgr")
 run_once("numlockx on")
 run_once("gnome-settings-daemon")
 run_once("xmodmap .xmodmaprc")
