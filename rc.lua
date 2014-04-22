@@ -3,18 +3,19 @@ require("awful")
 require("awful.autofocus")
 require("awful.rules")
 -- Theme handling library
---require("beautiful")
+require("beautiful")
 -- Notification library
 require("naughty")
 -- Load Debian menu entries
 require("debian.menu")
-require("beautiful") -- Темы
 require("utility")
 require("awful/widget/calendar2")
-require("blingbling")
+--require("blingbling")
 require("weather")
 
 os.setlocale('ru_RU.UTF-8') --}}}
+
+
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -83,9 +84,9 @@ for s = 1, screen.count() do
     tags[s] = awful.tag({ "ter", "web", "spy", "mes", 5, 6, 7, 8, 9 }, s, layouts[1])
 end
 
---awful.layout.set(layouts[10], tags[1][2])
---awful.layout.set(layouts[1], tags[1][1])
---awful.layout.set(layouts[3], tags[1][3])
+awful.layout.set(layouts[10], tags[1][2])
+awful.layout.set(layouts[1], tags[1][1])
+awful.layout.set(layouts[3], tags[1][3])
 
 -- }}}
 
@@ -110,10 +111,9 @@ myawesomemenu = {
 application = {
    { "google-chrome", "google-chrome", get_path("google-chrome") },
    { "skype", "skype", get_path("skype")},
-   { "spyder", "spyder"},
+   --{ "PyCharm", "spyder"},
    { "pidgin" , "pidgin", get_path("pidgin")},
-   { "pdf-reader","evince", get_path("evince")},
-   { "thunderbird","thunderbird"},
+   --{ "thunderbird","thunderbird"},
    { "krusader","krusader","/usr/share/icons/hicolor/22x22/apps/krusader_shield.png"},
    { "system monitor", "gnome-system-monitor"}
 }
@@ -207,17 +207,6 @@ mytasklist.buttons = awful.util.table.join(
 
 --{-------------------------------------------------------------------------------------------------------------------------------------------
 -- Volume widget
-volume_label = widget ({ type = "textbox" })
-volume_label.text = "♫"
-my_volume=blingbling.volume.new()
-my_volume:set_height(20)
-my_volume:set_v_margin(8)
-my_volume:set_width(35)
-my_volume:update_master()
-my_volume:set_master_control()
-my_volume:set_bar(true)
-my_volume:set_background_graph_color("#444444")--beautiful.bg_focus)
-my_volume:set_graph_color(beautiful.motive)--beautiful.fg_normal)
 --}-------------------------------------------------------------------------------------------------------------------------------------------
 
 --{-------------------------------------------------------------------------------------------------------------------------------------------
@@ -226,6 +215,7 @@ weatherwidget = widget({ type = "textbox" })
 imgweaterwidget = widget({ type = "imagebox" })
 weather.addWeather(weatherwidget, "voronezh", 3600)
 weather.addWeather(imgweaterwidget, "voronezh", 3600)
+
 --}-------------------------------------------------------------------------------------------------------------------------------------------
 
 --{-------------------------------------------------------------------------------------------------------------------------------------------
@@ -239,12 +229,12 @@ function battery_status ()
         --local battery_num = string.match(line, "Battery \#(%d+)")
         local battery_load = string.match(line,"(%d+\.%d+)")
         --local time_rem = string.match(line, "(%d+\:%d+)\:%d+")
-	local discharging
-	if string.match(line, "Discharging")=="Discharging" then --discharging: always red
-		discharging="<span color=\"#FF0000\"> BAT "
-	else --charging
-		discharging="<span color=\"#008000\"> AC "
-	end
+        local discharging
+        if string.match(line, "Discharging")=="Discharging" then --discharging: always red
+                discharging="<span color=\"#FF0000\"> BAT "
+        else --charging
+                discharging="<span color=\"#008000\"> AC "
+        end
             table.insert(output,discharging..battery_load.."%</span>")
         line=fd:read() --read next line
     end
@@ -257,6 +247,7 @@ my_battmon_timer:add_signal("timeout", function()
     mybattmon.text = " " .. battery_status() .. " "
 end)
 my_battmon_timer:start()
+
 --}-------------------------------------------------------------------------------------------------------------------------------------------
 
 --{-------------------------------------------------------------------------------------------------------------------------------------------
@@ -295,11 +286,11 @@ for s = 1, screen.count() do
             mypromptbox[s],
             layout = awful.widget.layout.horizontal.leftright,
         }, 
-        mylayoutbox[s], sp, 
+        mylayoutbox[s], sp,
         kbdwidget ,sp,
         mytextclock, sp,
         weatherwidget, imgweaterwidget ,sp,
-        my_volume.widget,volume_label,sp,
+--        my_volume.widget,volume_label,sp,
         mybattmon, sp,
         s == 1 and mysystray or nil,
         mytasklist[s],
@@ -377,7 +368,6 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey}, "s", function () awful.util.spawn("spyder") end),
     --awful.key({ modkey}, "s", function () awful.util.spawn("skype") end),
     awful.key({modkey, "Control"}, "n", function() awful.util.spawn("awsetbg -r /home/alex/wallpaper/") end),
-    
     -- Prompt
     awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
 
@@ -388,6 +378,7 @@ globalkeys = awful.util.table.join(
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
               end)
+
 )
 
 clientkeys = awful.util.table.join(
@@ -491,7 +482,7 @@ awful.rules.rules = {
 -- Signal function to execute when a new client appears.
 client.add_signal("manage", function (c, startup)
     -- Add a titlebar
-    --awful.titlebar.add(c, { modkey = modkey })
+    awful.titlebar.add(c, { modkey = modkey })
 	if c.titlebar then 
 		awful.titlebar.remove(c)
     else 
@@ -520,11 +511,11 @@ end)
 
 client.add_signal("focus", function(c) 
 						c.border_color = beautiful.border_focus 
-						c.opacity = 1 
+						--c.opacity = 1 
 					end )
 client.add_signal("unfocus", function(c) 
 						c.border_color = beautiful.border_normal 
-						c.opacity = 0.8 
+						--c.opacity = 0.8 
 					end )
 -- }}}
 
@@ -535,12 +526,15 @@ client.add_signal("unfocus", function(c)
 function run_once(prg)
   awful.util.spawn_with_shell("pgrep -u $USER -x " .. prg .. " || (" .. prg .. ")") end
 --{{---|autorun |----------------------------------------------------------------------------
+function run(prg)
+	awful.util.spawn_with_shell(prg) end
 
 run_once("nm-applet")
 run_once("xcompmgr")
 run_once("numlockx on")
 run_once("gnome-settings-daemon")
-run_once("xmodmap .xmodmaprc")
+--run_once("xmodmap .xmodmaprc")
 awful.util.spawn_with_shell("awsetbg -r /home/alex/wallpaper/")
 awful.util.spawn_with_shell("kbdd")
+awful.util.spawn_with_shell("setxkbmap -layout 'us,ru'")
 
