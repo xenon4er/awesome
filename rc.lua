@@ -12,7 +12,7 @@ require("utility")
 require("awful/widget/calendar2")
 --require("blingbling")
 require("weather")
-
+require("volume")
 os.setlocale('ru_RU.UTF-8') --}}}
 
 
@@ -81,12 +81,12 @@ layouts =
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ "ter", "web", "spy", "mes", 5, 6, 7, 8, 9 }, s, layouts[1])
+    tags[s] = awful.tag({ "ter", "web", "pch", "mes", 5, 6, 7, 8, 9 }, s, layouts[1])
 end
 
-awful.layout.set(layouts[10], tags[1][2])
 awful.layout.set(layouts[1], tags[1][1])
-awful.layout.set(layouts[3], tags[1][3])
+awful.layout.set(layouts[10], tags[1][2])
+awful.layout.set(layouts[10], tags[1][3])
 
 -- }}}
 
@@ -103,7 +103,8 @@ myawesomemenu = {
    { "edit config", editor_cmd .. " " .. awesome.conffile },
    { "restart", awesome.restart },
    { "quit", awesome.quit },
-   { "hibernate" , "sudo pm-hibernate"},
+   { "hibernate" , "gnome-screensaver-command -l; sudo pm-hibernate"},
+   { "suspend" , "gnome-screensaver-command -l; sudo pm-suspend"},
    { "shutdown" , "sudo shutdown -h now"},
    { "reboot" , "sudo reboot"}
 }
@@ -289,6 +290,7 @@ for s = 1, screen.count() do
         mylayoutbox[s], sp,
         kbdwidget ,sp,
         mytextclock, sp,
+	volume_widget,sp,
         weatherwidget, imgweaterwidget ,sp,
 --        my_volume.widget,volume_label,sp,
         mybattmon, sp,
@@ -365,7 +367,9 @@ globalkeys = awful.util.table.join(
     
     
     awful.key({ modkey}, "g", function () awful.util.spawn("google-chrome") end),
-    awful.key({ modkey}, "s", function () awful.util.spawn("spyder") end),
+	awful.key({ modkey, "Control"}, "s", function () awful.util.spawn("xset led named 'Scroll Lock'") end),
+        
+	awful.key({ modkey}, "d", function () awful.util.spawn("~/pycharm-community-3.1.1/bin/pycharm.sh") end),
     --awful.key({ modkey}, "s", function () awful.util.spawn("skype") end),
     awful.key({modkey, "Control"}, "n", function() awful.util.spawn("awsetbg -r /home/alex/wallpaper/") end),
     -- Prompt
@@ -377,8 +381,19 @@ globalkeys = awful.util.table.join(
                   mypromptbox[mouse.screen].widget,
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
-              end)
-
+              end),
+	--volume control
+ 	awful.key({ }, "XF86AudioRaiseVolume", function ()
+	       awful.util.spawn("amixer set Master 7%+") end),
+	awful.key({ }, "XF86AudioLowerVolume", function ()
+       		awful.util.spawn("amixer set Master 7%-") end),
+	
+	--brightness control
+    awful.key({ }, "XF86MonBrightnessDown", function ()
+        awful.util.spawn("xbacklight -dec 15") end),
+    awful.key({ }, "XF86MonBrightnessUp", function ()
+        awful.util.spawn("xbacklight -inc 15") end)
+   
 )
 
 clientkeys = awful.util.table.join(
@@ -475,6 +490,9 @@ awful.rules.rules = {
        properties = { tag = tags[1][4] } },
     { rule = { class = "Skype" },
        properties = { tag = tags[1][4] } },
+    { rule = { class = "PyCharm Community Edition 3.1.1" },
+       properties = { tag = tags[1][4] } },
+
 }
 -- }}}
 
