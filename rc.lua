@@ -103,10 +103,12 @@ myawesomemenu = {
    { "edit config", editor_cmd .. " " .. awesome.conffile },
    { "restart", awesome.restart },
    { "quit", awesome.quit },
-   { "hibernate" , "gnome-screensaver-command -l; sudo pm-hibernate"},
-   { "suspend" , "gnome-screensaver-command -l; sudo pm-suspend"},
-   { "shutdown" , "sudo shutdown -h now"},
-   { "reboot" , "sudo reboot"}
+   { "lock", "slock"},
+   { "hibernate" , "sudo pm-hibernate"},
+   { "suspend" , "sudo pm-suspend"},
+   { "reboot" , "sudo reboot"},
+   { "shutdown" , "sudo shutdown -h now"}
+
 }
 
 application = {
@@ -124,7 +126,6 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
               			    { "application", application},
                                     { "Debian menu", debian.menu.Debian_menu.Debian },
                                     { "open terminal", terminal },
-                                    
                                   }
                         })
 
@@ -350,6 +351,8 @@ globalkeys = awful.util.table.join(
             end
         end),
 
+    awful.key({ modkey,           }, "F1", function () naughty.notify({ text="google -- Mod+G \nPyCharm -- Mod+D\nScroll Lock -- Mod+Ctrl+S\nBackground -- Mod+Ctrl+N",timeout = 4 }) end),
+
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
@@ -369,7 +372,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey}, "g", function () awful.util.spawn("google-chrome") end),
 	awful.key({ modkey, "Control"}, "s", function () awful.util.spawn("xset led named 'Scroll Lock'") end),
         
-	awful.key({ modkey}, "d", function () awful.util.spawn("~/pycharm-community-3.1.1/bin/pycharm.sh") end),
+	awful.key({ modkey}, "d", function () awful.util.spawn("~/pycharm-community-3.4.1/bin/pycharm.sh") end),
     --awful.key({ modkey}, "s", function () awful.util.spawn("skype") end),
     awful.key({modkey, "Control"}, "n", function() awful.util.spawn("awsetbg -r /home/alex/wallpaper/") end),
     -- Prompt
@@ -490,7 +493,7 @@ awful.rules.rules = {
        properties = { tag = tags[1][4] } },
     { rule = { class = "Skype" },
        properties = { tag = tags[1][4] } },
-    { rule = { class = "PyCharm Community Edition 3.1.1" },
+    { rule = { class = "PyCharm Community Edition 3.4.1" },
        properties = { tag = tags[1][4] } },
 
 }
