@@ -13,16 +13,17 @@ local weatherFormat = '<span font="sans">%s</span>'
 
 -- Getting the weather information about the city
 function getWeather(city)
-	local parse = awful.util.pread("curl connect-timeout 1 -fsm 3 http://pogoda.yandex.ru/"..city.."/")
+	local parse = awful.util.pread("curl connect-timeout 1 -fsm 3 https://pogoda.yandex.ru/"..city.."/")
+	temper = string.match(parse, "[%d]*\&thinsp\;°C") or ""	
 	weatherbase[city].weather = {
 		--["cityname"]	= string.match(parse, "") or "Welcome to City-17. It's safer here.",
-		["wthtype"]	= string.match(parse, "big\">(.-)<") or "Тревога!",
+		["wthtype"]	= string.match(parse, "weather__comment\">([%S]+)</span>") or "Тревога!",
 		["sunrise"]	= string.match(parse, "Восход: </span>(.-)<"),
-		["sunset"]	= string.match(parse, "Заход: </span>(.-)<"),
-		["temp"]	= string.match(parse, "thermometer__now\">(.-)<") or '<span color="#ff892c"> ! </span>',
+		["sunset"]	= string.match(parse, "Закат: </span>(.-)<"),
+		["temp"]	= string.match(temper, "[%d]*")..'°C' or '<span color="#ff892c"> ! </span>',
+		["datafor"]	= string.match(parse, "Данные на [%d]*:[%d]*") or '<span color="#ff892c"> ! </span>',
 		["rhum"]	= string.match(parse, "Влажность: </span>(.-)<") or "Интернет пропал!",
 		["winddir"]	= string.match(parse, "Ветер: </span>(.-) м/с") or "Штиль",
---		["wind"]	= string.match(parse, "([%d].[%d] м/с)") or "ветер молчит..."
 		}
 end
 

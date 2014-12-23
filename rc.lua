@@ -81,10 +81,10 @@ layouts =
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ "ter", "web", "pch", "mes", 5, 6, 7, 8, 9 }, s, layouts[1])
+    tags[s] = awful.tag({ "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" }, s, layouts[1])
 end
 
-awful.layout.set(layouts[1], tags[1][1])
+awful.layout.set(layouts[10], tags[1][1])
 awful.layout.set(layouts[10], tags[1][2])
 awful.layout.set(layouts[10], tags[1][3])
 
@@ -289,7 +289,7 @@ for s = 1, screen.count() do
             layout = awful.widget.layout.horizontal.leftright,
         }, 
         mylayoutbox[s], sp,
-        kbdwidget ,sp,
+--        kbdwidget ,sp,
         mytextclock, sp,
 	volume_widget,sp,
         weatherwidget, imgweaterwidget ,sp,
@@ -372,7 +372,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey}, "g", function () awful.util.spawn("google-chrome") end),
 	awful.key({ modkey, "Control"}, "s", function () awful.util.spawn("xset led named 'Scroll Lock'") end),
         
-	awful.key({ modkey}, "d", function () awful.util.spawn("~/pycharm-community-3.4.1/bin/pycharm.sh") end),
+	awful.key({ modkey}, "d", function () awful.util.spawn("~/./pycharm-community-3.4.1/bin/pycharm.sh") end),
     --awful.key({ modkey}, "s", function () awful.util.spawn("skype") end),
     awful.key({modkey, "Control"}, "n", function() awful.util.spawn("awsetbg -r /home/alex/wallpaper/") end),
     -- Prompt
@@ -390,12 +390,15 @@ globalkeys = awful.util.table.join(
 	       awful.util.spawn("amixer set Master 7%+") end),
 	awful.key({ }, "XF86AudioLowerVolume", function ()
        		awful.util.spawn("amixer set Master 7%-") end),
+awful.key({}, "Print", function() awful.util.spawn("scrot '/home/alex/screenshots/%Y-%m-%d-%H-%M-%S.png'") end ),
+-- скриншот активного окна
+awful.key({"Shift"}, "Print", function() awful.util.spawn("scrot -u '/home/alex/screenshots/window_%Y-%m-%d-%H-%M-S.png'") end )
 	
 	--brightness control
-    awful.key({ }, "XF86MonBrightnessDown", function ()
-        awful.util.spawn("xbacklight -dec 15") end),
-    awful.key({ }, "XF86MonBrightnessUp", function ()
-        awful.util.spawn("xbacklight -inc 15") end)
+    --awful.key({ }, "XF86MonBrightnessDown", function ()
+      --  awful.util.spawn("xbacklight -dec 15") end),
+    --awful.key({ }, "XF86MonBrightnessUp", function ()
+       -- awful.util.spawn("xbacklight -inc 15") end)
    
 )
 
@@ -483,9 +486,8 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
-    -- Set Firefox to always map on tags number 2 of screen 1.
     { rule = { class = "Google-chrome" }, 
-       properties = { tag = tags[1][2] },
+       properties = { tag = tags[1][1] },
        callback = awful.titlebar.add  },
     { rule = { class = "Spyder" }, 
        properties = { tag = tags[1][3] } },
@@ -503,9 +505,9 @@ awful.rules.rules = {
 -- Signal function to execute when a new client appears.
 client.add_signal("manage", function (c, startup)
     -- Add a titlebar
-    awful.titlebar.add(c, { modkey = modkey })
-	if c.titlebar then 
-		awful.titlebar.remove(c)
+    --awful.titlebar.add(c, { modkey = modkey })
+    if c.titlebar then 
+	awful.titlebar.remove(c)
     else 
     	awful.titlebar.add(c, {modkey = modkey, height=18})
     end    
@@ -532,7 +534,7 @@ end)
 
 client.add_signal("focus", function(c) 
 						c.border_color = beautiful.border_focus 
-						--c.opacity = 1 
+						c.opacity = 1 
 					end )
 client.add_signal("unfocus", function(c) 
 						c.border_color = beautiful.border_normal 
@@ -552,10 +554,13 @@ function run(prg)
 
 run_once("nm-applet")
 run_once("xcompmgr")
-run_once("numlockx on")
+--run_once("numlockx on")
 run_once("gnome-settings-daemon")
+run_once("xfce4-power-manager")
+run_once("xfce4-panel")
+
 --run_once("xmodmap .xmodmaprc")
 awful.util.spawn_with_shell("awsetbg -r /home/alex/wallpaper/")
-awful.util.spawn_with_shell("kbdd")
-awful.util.spawn_with_shell("setxkbmap -layout 'us,ru'")
+--awful.util.spawn_with_shell("kbdd")
+--awful.util.spawn_with_shell("setxkbmap -layout 'us,ru'")
 
