@@ -19,7 +19,9 @@ function getWeather(city)
 	temper = string.match(parse, "[%d]*\&thinsp\;°C") or ""	
 	weatherbase[city].weather = {
 		--["cityname"]	= string.match(parse, "") or "Welcome to City-17. It's safer here.",
-		["wthtype"]	= string.match(parse, "weather__comment\">([%S]+)</span>") or "Тревога!",
+		["wthtype"]	= string.match(parse, "weather__comment\">([%S]*)</span>") or
+					string.match(parse, "weather__comment\">([%S]+[%s][%S]+)</span>") or
+						string.match(parse, "weather__comment\">([%S]+[%s][%S]+[%s][%S]+)</span>") or "Тревога!",
 		["sunrise"]	= string.match(parse, "Восход: </span>(.-)<"),
 		["sunset"]	= string.match(parse, "Закат: </span>(.-)<"),
 		["temp"]	= string.match(temper, "[%d]*")..'°C'.."  "..probki .." б" or '<span color="#ff892c"> ! </span>',
