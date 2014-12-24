@@ -1,8 +1,7 @@
 local string = { match = string.match, format = string.format }
 local table = { insert = table.insert }
 local os = { date = os.date }
-local capi = { timer = timer,
-			   image = image }
+local capi = { timer = timer, image = image }
 local naughty = require("naughty")
 local awful = require("awful")
 
@@ -24,10 +23,12 @@ function getWeather(city)
 						string.match(parse, "weather__comment\">([%S]+[%s][%S]+[%s][%S]+)</span>") or "Тревога!",
 		["sunrise"]	= string.match(parse, "Восход: </span>(.-)<"),
 		["sunset"]	= string.match(parse, "Закат: </span>(.-)<"),
-		["temp"]	= string.match(temper, "[%d]*")..'°C'.."  "..probki .." б" or '<span color="#ff892c"> ! </span>',
+		["temp"]	= string.match(temper, "[%d]*")..'°C'.."  "..probki .." бал."  or '<span color="#ff892c"> ! </span>',
 		["datafor"]	= string.match(parse, "Данные на [%d]*:[%d]*") or '<span color="#ff892c"> ! </span>',
 		["rhum"]	= string.match(parse, "Влажность: </span>(.-)<") or "Интернет пропал!",
 		["winddir"]	= string.match(parse, "Ветер: </span>(.-) м/с") or "Штиль",
+		["pressure"]	= string.match(parse, "Давление: </span>([%d]* мм рт. ст.)") or "---",
+		["traffic_jam"]	= "Пробки: " .. probki .. " бал. " .. (string.match(parse2, "traffic__descr\">([%S]+[%s][%S]+)</a>") or ""),
 		}
 end
 
@@ -92,8 +93,9 @@ function wthIcon(wthtype, sunrise, sunset)
 end
 
 -- Just formatting the data a little to display it in a notification
-function wthText(wthtype, rhum, winddir, wind)
-	return wthtype.."\n".. "Влажность:" ..rhum.."\n".. "Ветер:" .. winddir .. " м/с" .."\n\n" 
+function wthText(wthtype, rhum, winddir, sunrise, sunset, pressure, datafor, traffic_jam , city)
+	return wthtype.."\n".. "Влажность: " ..rhum.."\n".. "Ветер: " .. winddir .. " м/с" .."\n" .. "Восход: " .. sunrise .. "\n".. 
+		"Закат: " .. sunset .. "\n" .. "Давление: " .. pressure .. "\n".. datafor .. "\n" .. traffic_jam .."\n\n"  .. city  
 end
 
 -- Updating weather data
@@ -107,7 +109,8 @@ function updateWeather(city)
 	end
 
 	if w.wthinfo then
-		w.wthinfo.box.widgets[2].text = wthText(w.weather.wthtype, w.weather.rhum, w.weather.winddir )
+		w.wthinfo.box.widgets[2].text = wthText(w.weather.wthtype, w.weather.rhum, w.weather.winddir, w.weather.sunrise,
+							w.weather.sunset, w.weather.pressure, w.weather.datafor, w.weather.traffic_jam, city)
 		w.wthinfo.box.widgets[1].image = capi.image(wthIcon(w.weather.wthtype, w.weather.sunrise, w.weather.sunset))
 	end
 end
@@ -132,14 +135,15 @@ function addWeather(widget, city, timeout)
 	weathertimer:start()
 
 	widget:add_signal("mouse::enter",	function() local w = weatherbase[city]
-													w.wthinfo = naughty.notify({
-														--title = w.weather.cityname,
-														text = wthText(w.weather.wthtype, w.weather.rhum, w.weather.winddir, w.weather.wind)..city,
-														icon = wthIcon(w.weather.wthtype, w.weather.sunrise, w.weather.sunset),
-														timeout = 0,
-														hover_timeout = 0.5,
-														})					end)
-	widget:add_signal("mouse::leave",	function() naughty.destroy(weatherbase[city].wthinfo)	end)
-	widget:buttons(awful.util.table.join(
-					awful.button({}, 1, function() updateWeather(city)		end)))
+				w.wthinfo = naughty.notify({
+					--title = w.weather.cityname,
+					text = wthText(w.weather.wthtype, w.weather.rhum, w.weather.winddir, w.weather.sunrise,
+							w.weather.sunset, w.weather.pressure, w.weather.datafor, w.weather.traffic_jam, city),
+					icon = wthIcon(w.weather.wthtype, w.weather.sunrise, w.weather.sunset),
+					timeout = 0,
+					hover_timeout = 0.5,
+				})					
+			end)
+	widget:add_signal("mouse::leave", function() naughty.destroy(weatherbase[city].wthinfo)	end)
+	widget:buttons(awful.util.table.join(awful.button({}, 1, function() updateWeather(city)	end)))
 end
