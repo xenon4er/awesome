@@ -56,6 +56,7 @@ editor_cmd = terminal .. " -e " .. editor
 -- If you do not like this or do not have such a key,
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
+
 modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
@@ -104,10 +105,9 @@ myawesomemenu = {
    { "restart", awesome.restart },
    { "quit", awesome.quit },
    { "lock", "slock"},
-   { "hibernate" , "sudo pm-hibernate"},
-   { "suspend" , "sudo pm-suspend"},
-   { "reboot" , "sudo reboot"},
-   { "shutdown" , "sudo shutdown -h now"}
+   { "reboot" , "/usr/bin/dbus-send --system --print-reply --dest='org.freedesktop.ConsoleKit' /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart"},
+   { "shutdown" , "/usr/bin/dbus-send --system --print-reply --dest='org.freedesktop.ConsoleKit' /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Stop"},
+   { "suspend",   "/usr/bin/dbus-send --system --print-reply --dest='org.freedesktop.UPower' /org/freedesktop/UPower org.freedesktop.UPower.Suspend"}
 
 }
 
@@ -115,9 +115,9 @@ application = {
    { "google-chrome", "google-chrome", get_path("google-chrome") },
    { "skype", "skype", get_path("skype")},
    --{ "PyCharm", "spyder"},
-   { "pidgin" , "pidgin", get_path("pidgin")},
+   --{ "pidgin" , "pidgin", get_path("pidgin")},
    --{ "thunderbird","thunderbird"},
-   { "krusader","krusader","/usr/share/icons/hicolor/22x22/apps/krusader_shield.png"},
+   --{ "krusader","krusader","/usr/share/icons/hicolor/22x22/apps/krusader_shield.png"},
    { "system monitor", "gnome-system-monitor"}
 }
 
@@ -289,12 +289,12 @@ for s = 1, screen.count() do
             layout = awful.widget.layout.horizontal.leftright,
         }, 
         mylayoutbox[s], sp,
---        kbdwidget ,sp,
+        kbdwidget ,sp,
         mytextclock, sp,
-	volume_widget,sp,
-        weatherwidget, imgweaterwidget ,sp,
+	      volume_widget,sp,
+        --weatherwidget, imgweaterwidget ,sp,
 --        my_volume.widget,volume_label,sp,
-        mybattmon, sp,
+        --mybattmon, sp,
         s == 1 and mysystray or nil,
         mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft
@@ -512,7 +512,7 @@ awful.rules.rules = {
 -- Signal function to execute when a new client appears.
 client.add_signal("manage", function (c, startup)
     -- Add a titlebar
-    --awful.titlebar.add(c, { modkey = modkey })
+    awful.titlebar.add(c, { modkey = modkey })
     if c.titlebar then 
 	awful.titlebar.remove(c)
     else 
@@ -568,7 +568,7 @@ run_once("xfce4-power-manager")
 run_once("xfce4-panel")
 
 --run_once("xmodmap .xmodmaprc")
---awful.util.spawn_with_shell("awsetbg -r /home/alex/wallpaper/")
+awful.util.spawn_with_shell("awsetbg -r ~/wallpaper/")
 awful.util.spawn_with_shell("kbdd")
 awful.util.spawn_with_shell("setxkbmap -layout 'us,ru'")
 
