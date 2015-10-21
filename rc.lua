@@ -11,7 +11,7 @@ require("debian.menu")
 require("utility")
 require("awful/widget/calendar2")
 --require("blingbling")
-require("weather")
+--require("weather")
 require("volume")
 os.setlocale('ru_RU.UTF-8') --}}}
 
@@ -213,42 +213,42 @@ mytasklist.buttons = awful.util.table.join(
 
 --{-------------------------------------------------------------------------------------------------------------------------------------------
 --weather
-weatherwidget = widget({ type = "textbox" })
-imgweaterwidget = widget({ type = "imagebox" })
-weather.addWeather(weatherwidget, "voronezh", 3600)
-weather.addWeather(imgweaterwidget, "voronezh", 3600)
+--weatherwidget = widget({ type = "textbox" })
+--imgweaterwidget = widget({ type = "imagebox" })
+--weather.addWeather(weatherwidget, "voronezh", 3600)
+--weather.addWeather(imgweaterwidget, "voronezh", 3600)
 
 --}-------------------------------------------------------------------------------------------------------------------------------------------
 
 --{-------------------------------------------------------------------------------------------------------------------------------------------
 --battery
-mybattmon = widget({ type = "textbox", name = "mybattmon", align = "right" })
-function battery_status ()
-    local output={} --output buffer
-    local fd=io.popen("acpitool -b", "r") --list present batteries
-    local line=fd:read()
-    while line do --there might be several batteries.
-        --local battery_num = string.match(line, "Battery \#(%d+)")
-        local battery_load = string.match(line,"(%d+\.%d+)")
+--mybattmon = widget({ type = "textbox", name = "mybattmon", align = "right" })
+--function battery_status ()
+--    local output={} --output buffer
+--    local fd=io.popen("acpitool -b", "r") --list present batteries
+--    local line=fd:read()
+--    while line do --there might be several batteries.
+--        --local battery_num = string.match(line, "Battery \#(%d+)")
+--        local battery_load = string.match(line,"(%d+\.%d+)")
         --local time_rem = string.match(line, "(%d+\:%d+)\:%d+")
-        local discharging
-        if string.match(line, "Discharging")=="Discharging" then --discharging: always red
-                discharging="<span color=\"#FF0000\"> BAT "
-        else --charging
-                discharging="<span color=\"#008000\"> AC "
-        end
-            table.insert(output,discharging..battery_load.."%</span>")
-        line=fd:read() --read next line
-    end
-    return table.concat(output," ") --FIXME: better separation for several batteries. maybe a pipe?
-end
-mybattmon.text = " " .. battery_status() .. " "
-my_battmon_timer=timer({timeout=30})
-my_battmon_timer:add_signal("timeout", function()
+--        local discharging
+--        if string.match(line, "Discharging")=="Discharging" then --discharging: always red
+ --               discharging="<span color=\"#FF0000\"> BAT "
+--        else --charging
+--                discharging="<span color=\"#008000\"> AC "
+--        end
+--            table.insert(output,discharging..battery_load.."%</span>")
+--        line=fd:read() --read next line
+--    end
+--    return table.concat(output," ") --FIXME: better separation for several batteries. maybe a pipe?
+--end
+--mybattmon.text = " " .. battery_status() .. " "
+--my_battmon_timer=timer({timeout=30})
+--my_battmon_timer:add_signal("timeout", function()
     --mytextbox.text = " " .. os.date() .. " "
-    mybattmon.text = " " .. battery_status() .. " "
-end)
-my_battmon_timer:start()
+--    mybattmon.text = " " .. battery_status() .. " "
+--end)
+--my_battmon_timer:start()
 
 --}-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -311,9 +311,16 @@ root.buttons(awful.util.table.join(
 ))
 -- }}}
 
+k ="#45"  r="#27" q="#24" l="#46"    
+b ="#56"  f="#41" c="#54" o="#32"   
+w ="#25"  s="#39" x="#53" r="#27"
+j ="#44"  n="#57" g="#42" h="#43"
+u ="#30"  t="#28" m="#58"
+
+
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
-    awful.key({ modkey }, "b",
+    awful.key({ modkey }, b,
        function ()
            if mywibox[mouse.screen].screen == nil then
                mywibox[mouse.screen].screen = mouse.screen
@@ -325,24 +332,24 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
 
-    awful.key({ modkey,           }, "j",
+    awful.key({ modkey,           }, j,
         function ()
             awful.client.focus.byidx( 1)
             if client.focus then client.focus:raise() end
         end),
-    awful.key({ modkey,           }, "k",
+    awful.key({ modkey,           }, k,
         function ()
             awful.client.focus.byidx(-1)
             if client.focus then client.focus:raise() end
         end),
-    awful.key({ modkey,           }, "w", function () mymainmenu:show({keygrabber=true}) end),
+    awful.key({ modkey,           }, w, function () mymainmenu:show({keygrabber=true}) end),
 
     -- Layout manipulation
-    awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end),
-    awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
-    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
-    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
-    awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
+    awful.key({ modkey, "Shift"   }, j, function () awful.client.swap.byidx(  1)    end),
+    awful.key({ modkey, "Shift"   }, k, function () awful.client.swap.byidx( -1)    end),
+    awful.key({ modkey, "Control" }, j, function () awful.screen.focus_relative( 1) end),
+    awful.key({ modkey, "Control" }, k, function () awful.screen.focus_relative(-1) end),
+    awful.key({ modkey,           }, u, awful.client.urgent.jumpto),
     awful.key({ modkey,           }, "Tab",
         function ()
             awful.client.focus.history.previous()
@@ -355,30 +362,30 @@ globalkeys = awful.util.table.join(
 
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
-    awful.key({ modkey, "Control" }, "r", awesome.restart),
-    awful.key({ modkey, "Shift"   }, "q", awesome.quit),
+    awful.key({ modkey, "Control" }, r, awesome.restart),
+    awful.key({ modkey, "Shift"   }, q, awesome.quit),
 
-    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end),
-    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)    end),
-    awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1)      end),
-    awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1)      end),
-    awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1)         end),
-    awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1)         end),
+    awful.key({ modkey,           }, l,     function () awful.tag.incmwfact( 0.05)    end),
+    awful.key({ modkey,           }, h,     function () awful.tag.incmwfact(-0.05)    end),
+    awful.key({ modkey, "Shift"   }, h,     function () awful.tag.incnmaster( 1)      end),
+    awful.key({ modkey, "Shift"   }, l,     function () awful.tag.incnmaster(-1)      end),
+    awful.key({ modkey, "Control" }, h,     function () awful.tag.incncol( 1)         end),
+    awful.key({ modkey, "Control" }, l,     function () awful.tag.incncol(-1)         end),
     awful.key({ modkey,           }, "space", function () awful.layout.inc(layouts,  1) end),
     awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
-    awful.key({ modkey, "Control" }, "n", awful.client.restore),
+    awful.key({ modkey, "Control" }, n, awful.client.restore),
     
     
-    awful.key({ modkey}, "g", function () awful.util.spawn("google-chrome") end),
-	awful.key({ modkey, "Control"}, "s", function () awful.util.spawn("xset led named 'Scroll Lock'") end),
+    awful.key({ modkey}, g, function () awful.util.spawn("google-chrome") end),
+	awful.key({ modkey, "Control"}, s, function () awful.util.spawn("xset led named 'Scroll Lock'") end),
         
-	awful.key({ modkey}, "d", function () awful.util.spawn("~/./pycharm-community-3.4.1/bin/pycharm.sh") end),
-    --awful.key({ modkey}, "s", function () awful.util.spawn("skype") end),
-    awful.key({modkey, "Control"}, "n", function() awful.util.spawn("awsetbg -r /home/alex/wallpaper/") end),
+	awful.key({ modkey}, d, function () awful.util.spawn("~/./pycharm-community-3.4.1/bin/pycharm.sh") end),
+    --awful.key({ modkey}, s, function () awful.util.spawn("skype") end),
+    awful.key({modkey, "Control"}, n, function() awful.util.spawn("awsetbg -r /home/alex/wallpaper/") end),
     -- Prompt
-    awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
+    awful.key({ modkey },r,function () mypromptbox[mouse.screen]:run() end),
 
-    awful.key({ modkey }, "x",
+    awful.key({ modkey }, x,
               function ()
                   awful.prompt.run({ prompt = "Run Lua code: " },
                   mypromptbox[mouse.screen].widget,
@@ -403,20 +410,20 @@ awful.key({"Shift"}, "Print", function() awful.util.spawn("scrot -u '/home/alex/
 )
 
 clientkeys = awful.util.table.join(
-    awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
-    awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end),
+    awful.key({ modkey,           }, f,      function (c) c.fullscreen = not c.fullscreen  end),
+    awful.key({ modkey, "Shift"   }, c,      function (c) c:kill()                         end),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
-    awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
-    awful.key({ modkey, "Shift"   }, "r",      function (c) c:redraw()                       end),
-    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
-    awful.key({ modkey,           }, "n",
+    awful.key({ modkey,           }, o,      awful.client.movetoscreen                        ),
+    awful.key({ modkey, "Shift"   }, r,      function (c) c:redraw()                       end),
+    awful.key({ modkey,           }, t,      function (c) c.ontop = not c.ontop            end),
+    awful.key({ modkey,           }, n,
         function (c)
             -- The client currently has the input focus, so it cannot be
             -- minimized, since minimized clients can't have the focus.
             c.minimized = true
         end),
-    awful.key({ modkey,           }, "m",
+    awful.key({ modkey,           }, m,
         function (c)
             c.maximized_horizontal = not c.maximized_horizontal
             c.maximized_vertical   = not c.maximized_vertical
@@ -552,6 +559,7 @@ function run_once(prg)
 function run(prg)
 	awful.util.spawn_with_shell(prg) end
 
+--run_once("kbdd")
 run_once("nm-applet")
 run_once("xcompmgr")
 --run_once("numlockx on")
@@ -560,7 +568,7 @@ run_once("xfce4-power-manager")
 run_once("xfce4-panel")
 
 --run_once("xmodmap .xmodmaprc")
-awful.util.spawn_with_shell("awsetbg -r /home/alex/wallpaper/")
---awful.util.spawn_with_shell("kbdd")
---awful.util.spawn_with_shell("setxkbmap -layout 'us,ru'")
+--awful.util.spawn_with_shell("awsetbg -r /home/alex/wallpaper/")
+awful.util.spawn_with_shell("kbdd")
+awful.util.spawn_with_shell("setxkbmap -layout 'us,ru'")
 
