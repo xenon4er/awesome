@@ -48,7 +48,7 @@ beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
-editor = "gedit"--os.getenv("EDITOR") or "editor"
+editor = "subl"--os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -291,7 +291,8 @@ for s = 1, screen.count() do
         mylayoutbox[s], sp,
         kbdwidget ,sp,
         mytextclock, sp,
-	      volume_widget,sp,
+        volume_widget,sp,
+	      volume_widget_front,sp,
         --weatherwidget, imgweaterwidget ,sp,
 --        my_volume.widget,volume_label,sp,
         --mybattmon, sp,
@@ -358,7 +359,18 @@ globalkeys = awful.util.table.join(
             end
         end),
 
-    awful.key({ modkey,           }, "F1", function () naughty.notify({ text="google -- Mod+G \nPyCharm -- Mod+D\nScroll Lock -- Mod+Ctrl+S\nBackground -- Mod+Ctrl+N",timeout = 4 }) end),
+    awful.key({ modkey,           }, "F1", function () naughty.notify({ 
+      text=[[
+google -- Mod+G
+PyCharm -- Mod+D
+Skype -- Mod+S
+Scroll Lock -- Mod+Ctrl+S
+Background -- Mod+Ctrl+N
+Front off -- Mod+Ctrl+0
+Master +25% -- Mod+Ctrl+=
+Master -25% -- Mod+Ctrl+-
+]],
+      timeout = 5 }) end),
 
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
@@ -379,8 +391,8 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey}, g, function () awful.util.spawn("google-chrome") end),
 	awful.key({ modkey, "Control"}, s, function () awful.util.spawn("xset led named 'Scroll Lock'") end),
         
-	awful.key({ modkey}, d, function () awful.util.spawn("~/./pycharm-community-3.4.1/bin/pycharm.sh") end),
-    --awful.key({ modkey}, s, function () awful.util.spawn("skype") end),
+	awful.key({ modkey}, d, function () awful.util.spawn("~/pycharm-community-4.5.4/bin/pycharm.sh") end),
+    awful.key({ modkey}, s, function () awful.util.spawn("skype") end),
     awful.key({modkey, "Control"}, n, function() awful.util.spawn("awsetbg -r /home/alex/wallpaper/") end),
     -- Prompt
     awful.key({ modkey },r,function () mypromptbox[mouse.screen]:run() end),
@@ -392,14 +404,21 @@ globalkeys = awful.util.table.join(
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
               end),
-	--volume control
- 	awful.key({ }, "XF86AudioRaiseVolume", function ()
-	       awful.util.spawn("amixer set Master 7%+") end),
-	awful.key({ }, "XF86AudioLowerVolume", function ()
-       		awful.util.spawn("amixer set Master 7%-") end),
-awful.key({}, "Print", function() awful.util.spawn("scrot '/home/alex/screenshots/%Y-%m-%d-%H-%M-%S.png'") end ),
+	--volume control 
+ 	awful.key({ modkey, "Control" }, "#21", function () -- =
+	       awful.util.spawn("amixer set Master 25%+") end),
+  awful.key({ modkey, "Control" }, "#20", function () -- -
+          awful.util.spawn("amixer set Master 25%-") end),
+	awful.key({ modkey, "Control" }, "#19", function () -- 0
+       		awful.util.spawn("amixer set Front 0%") end),
+  
+  awful.key({ }, "XF86AudioRaiseVolume", function ()
+         awful.util.spawn("amixer set Front 7%+") end),
+  awful.key({ }, "XF86AudioLowerVolume", function ()
+          awful.util.spawn("amixer set Front 7%-") end),
+awful.key({}, "Print", function() awful.util.spawn("scrot '~/screenshots/%Y-%m-%d-%H-%M-%S.png'") end ),
 -- скриншот активного окна
-awful.key({"Shift"}, "Print", function() awful.util.spawn("scrot -u '/home/alex/screenshots/window_%Y-%m-%d-%H-%M-S.png'") end )
+awful.key({"Shift"}, "Print", function() awful.util.spawn("scrot -u '~/screenshots/window_%Y-%m-%d-%H-%M-S.png'") end )
 	
 	--brightness control
     --awful.key({ }, "XF86MonBrightnessDown", function ()
@@ -564,11 +583,9 @@ run_once("nm-applet")
 run_once("xcompmgr")
 --run_once("numlockx on")
 run_once("gnome-settings-daemon")
-run_once("xfce4-power-manager")
-run_once("xfce4-panel")
 
 --run_once("xmodmap .xmodmaprc")
 awful.util.spawn_with_shell("awsetbg -r ~/wallpaper/")
-awful.util.spawn_with_shell("kbdd")
-awful.util.spawn_with_shell("setxkbmap -layout 'us,ru'")
+--awful.util.spawn_with_shell("kbdd")
+--awful.util.spawn_with_shell("setxkbmap -layout 'us,ru'")
 
