@@ -86,8 +86,8 @@ for s = 1, screen.count() do
 end
 
 awful.layout.set(layouts[10], tags[1][1])
-awful.layout.set(layouts[10], tags[1][2])
-awful.layout.set(layouts[10], tags[1][3])
+awful.layout.set(layouts[9], tags[1][2])
+awful.layout.set(layouts[9], tags[1][3])
 
 -- }}}
 
