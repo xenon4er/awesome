@@ -113,11 +113,11 @@ myawesomemenu = {
 
 application = {
    { "google-chrome", "google-chrome", get_path("google-chrome") },
-   { "skype", "skype", get_path("skype")},
+   --{ "skype", "skype", get_path("skype")},
    --{ "PyCharm", "spyder"},
    --{ "pidgin" , "pidgin", get_path("pidgin")},
    --{ "thunderbird","thunderbird"},
-   --{ "krusader","krusader","/usr/share/icons/hicolor/22x22/apps/krusader_shield.png"},
+   { "krusader","krusader","/usr/share/icons/hicolor/22x22/apps/krusader_shield.png"},
    { "system monitor", "gnome-system-monitor"}
 }
 
