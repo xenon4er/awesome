@@ -15,7 +15,7 @@ local menubar = require("menubar")
 require("debian.menu")
 
 require("volume")
-
+require("wallpapers")
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -561,59 +561,25 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- {{{ Function definitions
 
--- scan directory, and optionally filter outputs
-function scandir(directory, filter)
-    local i, t, popen = 0, {}, io.popen
-    if not filter then
-        filter = function(s) return true end
-    end
-    print(filter)
-    for filename in popen('ls -a "'..directory..'"'):lines() do
-        if filter(filename) then
-            i = i + 1
-            t[i] = filename
-        end
-    end
-    return t
+
+function run_once(cmd)
+  findme = cmd
+  firstspace = cmd:find(" ")
+  if firstspace then
+    findme = cmd:sub(0, firstspace-1)
+  end
+  awful.util.spawn_with_shell("pgrep -u $USER -x " .. findme .. " > /dev/null || (" .. cmd .. ")")
 end
 
--- set wallpaper
-function wp_set(wp_path, wp_files)
-    local wp_index = math.random( 1, #wp_files)
-    for s = 1, screen.count() do
-        gears.wallpaper.maximized(wp_path .. wp_files[wp_index], s, true)
-    end
-end 
--- }}}
-
--- configuration - edit to your liking
-wp_index = 1
-wp_timeout  = 60*10
-wp_path = "/home/alex/wallpaper/"
-wp_filter = function(s) return string.match(s,"%.png$") or string.match(s,"%.jpg$") end
-wp_files = scandir(wp_path, wp_filter)
-math.randomseed(os.time())
-
---first run background
-wp_set(wp_path, wp_files)
- 
--- setup the timer
-wp_timer = timer { timeout = wp_timeout }
-wp_timer:connect_signal("timeout", function()
- 
-  -- set wallpaper to current index for all screens
-  wp_set(wp_path, wp_files)
- 
-  -- stop the timer (we don't need multiple instances running at the same time)
-  wp_timer:stop()
-  
-  --restart the timer
-  wp_timer.timeout = wp_timeout
-  wp_timer:start()
-end)
 
 
- 
--- initial start when rc.lua is first run
-wp_timer:start()
---}}
+wallpaper_run()
+
+
+run_once("xscreensaver -no-splash")
+run_once("kbdd")
+run_once("setxkbmap us,ru -option grp:alt_shift_toggle,grp_led:scroll")
+
+--set default values: master 100% front 0%
+ awful.util.spawn("amixer set Master 100%")
+ awful.util.spawn("amixer set Front 0%")
