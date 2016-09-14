@@ -1,5 +1,5 @@
 
-local json = require( "lib/JSON")  
+local json = require( "../lib/JSON")  
 local wibox = require("wibox")
 local awful = require("awful")
 local naughty = require("naughty")
@@ -22,7 +22,7 @@ local function set_new_weather(city, appid)
 	local last_weather_string = json:encode(last_weather_json)
 
 	--write to file
-	local f = io.open (".config/awesome/new_weather_params.txt", "w")
+	local f = io.open (".config/awesome/weather/weather_params.txt", "w")
 	io.output(f)
 	io.write(last_weather_string)
 	io.close(f)
@@ -35,7 +35,7 @@ local function get_weather(city, appid)
 	local last_weather_string = ""
 	local last_weather_json = 0
 
-	local f = io.open (".config/awesome/new_weather_params.txt", "r")
+	local f = io.open (".config/awesome/weather/weather_params.txt", "r")
 	for line in f:lines() do last_weather_string = last_weather_string .. line end
 	io.close(f)
 
