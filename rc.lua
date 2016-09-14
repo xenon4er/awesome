@@ -1,4 +1,5 @@
 -- Standard awesome library
+
 local gears = require("gears")
 local awful = require("awful")
 awful.rules = require("awful.rules")
@@ -14,8 +15,13 @@ local menubar = require("menubar")
 -- Load Debian menu entries
 require("debian.menu")
 
+--load config file
+local config = require ("config")
+
 require("volume")
 require("wallpapers")
+require("new_weather")
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -251,6 +257,8 @@ for s = 1, screen.count() do
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
     right_layout:add(sp)
+    right_layout:add(weather_widget_run(config.WEATHER_CITY, config.WEATHER_APPID))
+    right_layout:add(sp)
     right_layout:add(volume_widget_front)
     right_layout:add(sp)
     right_layout:add(volume_widget)
@@ -475,6 +483,11 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
+    { rule = { class = "Skype" },
+      properties = { tag = tags[1][4] } },
+    { rule = { class = "google-chrome" }, 
+      properties = { tag = tags[1][1] },
+      callback = awful.titlebar.add  },
     -- Set Firefox to always map on tags number 2 of screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { tag = tags[1][2] } },
