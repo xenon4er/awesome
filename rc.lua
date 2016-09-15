@@ -101,6 +101,7 @@ end
 awful.layout.set(layouts[10], tags[1][1])
 awful.layout.set(layouts[9], tags[1][2])
 awful.layout.set(layouts[9], tags[1][3])
+awful.layout.set(layouts[5], tags[1][9])
 
 -- }}}
 
@@ -122,8 +123,15 @@ myawesomemenu = {
    { "reboot" , "systemctl reboot"},
    { "shutdown" , "systemctl poweroff"},
    { "suspend",   "systemctl suspend"}
+}
+
+monitors = {
+   { "htop",    terminal .." -e htop"},
+   { "slurm",    terminal .." -e slurm -i enp2s0"},
+   { "weather",    terminal .." curl -4 wttr.in/Voronezh"},
 
 }
+
 
 application = {
    { "google-chrome", "google-chrome", get_path("google-chrome") },
@@ -139,7 +147,9 @@ application = {
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                     { "application", application},
                                     { "Debian", debian.menu.Debian_menu.Debian },
-                                    { "open terminal", terminal }
+                                    { "open terminal", terminal },
+                                    { "monitors", monitors}
+
                                   }
                         })
 
