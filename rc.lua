@@ -486,8 +486,7 @@ awful.rules.rules = {
     { rule = { class = "Skype" },
       properties = { tag = tags[1][4] } },
     { rule = { class = "google-chrome" }, 
-      properties = { tag = tags[1][1] },
-      callback = awful.titlebar.add  },
+      properties = { tag = tags[1][1] } },
     -- Set Firefox to always map on tags number 2 of screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { tag = tags[1][2] } },

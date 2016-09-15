@@ -67,7 +67,11 @@ function weather_widget_run(city, appid)
 
 	local mytimer = timer({ timeout = 5*60 })
 	mytimer:connect_signal("timeout", function ()
-		t1 = get_weather(city, appid).main.temp .. "C"
+		if not get_weather(city, appid).main then
+			t1 = get_weather(city, appid).main.temp .. "C"
+		else
+			t1 = "NA"
+		end
 		weather_widget:set_markup(t1)
 	end)
 	mytimer:start()
