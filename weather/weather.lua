@@ -62,12 +62,16 @@ function weather_widget_run(city, appid)
 	--    awful.button({ }, 4, function()   end),
 	--    awful.button({ }, 5, function()   end)
 	))
-	local t1 = get_weather(city, appid).main.temp .. "C"
+
+	local t1 = "NA C"
+	if get_weather(city, appid).main then 
+		t1 = get_weather(city, appid).main.temp .. "C"
+	end
 	weather_widget:set_markup(t1)
 
 	local mytimer = timer({ timeout = 5*60 })
 	mytimer:connect_signal("timeout", function ()
-		if get_weather(city, appid).main then
+		if get_weather(city, appid) and get_weather(city, appid).main then
 			t1 = get_weather(city, appid).main.temp .. "C"
 		else
 			t1 = "NA"
