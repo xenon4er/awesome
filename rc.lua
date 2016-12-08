@@ -19,7 +19,7 @@ require("debian.menu")
 local config = require ("config")
 
 require("volume")
-require("wallpapers")
+--require("wallpapers")
 require("weather/weather")
 
 -- {{{ Error handling
@@ -595,7 +595,7 @@ end
 
 
 
-wallpaper_run()
+--wallpaper_run()
 
 
 run_once("xscreensaver -no-splash")
