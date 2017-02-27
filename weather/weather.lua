@@ -61,13 +61,14 @@ end
 
 function weather_widget_run(city, appid)
 	local weather_widget = wibox.widget.textbox(t1)
-	local t1 = "NA C"
+	local t1 = "NA C<sup>o</sup>"
 
 	weather_widget:set_align("right")
 	weather_widget:buttons(awful.util.table.join(
 	    awful.button({ }, 1, function()
-			if get_weather(city, appid, true) and get_weather(city, appid, true).main then
-				t1 = get_weather(city, appid, true).main.temp .. " C<sup>o</sup>"
+	    	local cur_weather = get_weather(city, appid, true)
+			if cur_weather and cur_weather.main then
+				t1 = cur_weather.main.temp .. " C<sup>o</sup>"
 			else
 				t1 = "NA"
 			end
@@ -76,15 +77,17 @@ function weather_widget_run(city, appid)
 	--    awful.button({ }, 5, function()   end)
 	))
 
-	if get_weather(city, appid, false) and get_weather(city, appid, false).main then 
-		t1 = get_weather(city, appid, false).main.temp .. " C<sup>o</sup>"
+	local cur_weather = get_weather(city, appid, false)
+	if  cur_weather and cur_weather.main then 
+		t1 = cur_weather.main.temp .. " C<sup>o</sup>"
 	end
 	weather_widget:set_markup(t1)
 
 	local mytimer = timer({ timeout = 5*60 })
 	mytimer:connect_signal("timeout", function ()
-		if get_weather(city, appid, false) and get_weather(city, appid, false).main then
-			t1 = get_weather(city, appid, false).main.temp .. " C<sup>o</sup>"
+		local cur_weather = get_weather(city, appid, false)
+		if  cur_weather and cur_weather.main then 
+			t1 = cur_weather.main.temp .. " C<sup>o</sup>"
 		else
 			t1 = "NA"
 		end
