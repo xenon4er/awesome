@@ -84,6 +84,16 @@ local layouts =
 -- }}}
 
 -- {{{ Wallpaper
+
+local wallpapers = {
+  os.getenv("HOME") .. "/wallpapers/street_race-wallpaper-1600x900.jpg",
+  os.getenv("HOME") .. "/wallpapers/girl_212-wallpaper-1600x900.jpg"
+}
+
+math.randomseed(os.time());
+
+beautiful.wallpaper =  wallpapers[math.random(1, #wallpapers)]
+
 if beautiful.wallpaper then
     for s = 1, screen.count() do
         gears.wallpaper.maximized(beautiful.wallpaper, s, true)
@@ -390,7 +400,7 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey}, g, function () awful.util.spawn("google-chrome") end),
     awful.key({ modkey}, d, function () awful.util.spawn("~/pycharm-community-4.5.4/bin/pycharm.sh") end),
     awful.key({ modkey}, s, function () awful.util.spawn("skype") end),
-    --awful.key({modkey, "Control"}, n, function() awful.util.spawn("awsetbg -r /home/alex/wallpaper/") end),
+    -- awful.key({modkey, "Control"}, n, function() awful.util.spawn("awsetbg -r /home/alex/wallpaper/") end),
     --volume control 
     awful.key({ modkey, "Control" }, "#21", function () -- =
         awful.util.spawn("amixer set Master 25%+") end),
@@ -597,11 +607,12 @@ end
 
 --wallpaper_run()
 
-
 run_once("xscreensaver -no-splash")
 run_once("kbdd")
 run_once("setxkbmap us,ru -option grp:alt_shift_toggle,grp_led:scroll")
 
 --set default values: master 100% front 0%
- awful.util.spawn("amixer set Master 100%")
- awful.util.spawn("amixer set Front 0%")
+--awful.util.spawn("amixer set Master 100%")
+--awful.util.spawn("amixer set Front 0%")
+
+-- awful.util.spawn("awsetbg -r /home/alex/wallpapers/")
