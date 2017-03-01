@@ -197,8 +197,16 @@ dbus.connect_signal("ru.gentoo.kbdd", function(...)
 --- {{{ WIFI
 wifi_widget = wibox.widget.textbox()
 vicious.register(wifi_widget, vicious.widgets.wifi, "WiFi:${ssid}", 60, "wlp1s0")
+---- }}} 
 
---- {{{ WIFI
+--- {{{ NETWORK
+net_widget = wibox.widget.textbox("das")
+vicious.register(net_widget, vicious.widgets.net, "${wlp1s0 down_kb}kb/s", 3)
+---- }}} 
+
+
+
+--- {{{ MEMORY RAM
 mem_widget = wibox.widget.textbox()
 vicious.register(mem_widget, vicious.widgets.mem, "RAM:$1%", 3)
 ---- }}} 
@@ -292,6 +300,8 @@ for s = 1, screen.count() do
     right_layout:add(mem_widget)
     right_layout:add(sp)
     right_layout:add(wifi_widget)
+    right_layout:add(sp)
+    right_layout:add(net_widget)
     right_layout:add(sp)
     right_layout:add(weather_widget_run(config.WEATHER_CITY, config.WEATHER_APPID))
     right_layout:add(sp)
