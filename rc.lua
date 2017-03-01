@@ -194,8 +194,14 @@ dbus.connect_signal("ru.gentoo.kbdd", function(...)
 )
 
 
+--- {{{ WIFI
 wifi_widget = wibox.widget.textbox()
-vicious.register(wifi_widget, vicious.widgets.wifi, "${ssid} Rate: ${rate}MB/s Link: ${link}%", 3, "wlp1s0")
+vicious.register(wifi_widget, vicious.widgets.wifi, "WiFi:${ssid}", 60, "wlp1s0")
+
+--- {{{ WIFI
+mem_widget = wibox.widget.textbox()
+vicious.register(mem_widget, vicious.widgets.mem, "RAM:$1%", 3)
+---- }}} 
 
 -- {{{ Wibox
 -- Create a textclock widget
@@ -282,6 +288,8 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
+    right_layout:add(sp)
+    right_layout:add(mem_widget)
     right_layout:add(sp)
     right_layout:add(wifi_widget)
     right_layout:add(sp)
