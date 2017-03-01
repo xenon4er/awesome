@@ -12,6 +12,8 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 
+local vicious = require("vicious")
+
 -- Load Debian menu entries
 require("debian.menu")
 
@@ -191,6 +193,10 @@ dbus.connect_signal("ru.gentoo.kbdd", function(...)
     end
 )
 
+
+wifi_widget = wibox.widget.textbox()
+vicious.register(wifi_widget, vicious.widgets.wifi, "${ssid} Rate: ${rate}MB/s Link: ${link}%", 3, "wlp1s0")
+
 -- {{{ Wibox
 -- Create a textclock widget
 mytextclock = awful.widget.textclock()
@@ -276,6 +282,8 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
+    right_layout:add(sp)
+    right_layout:add(wifi_widget)
     right_layout:add(sp)
     right_layout:add(weather_widget_run(config.WEATHER_CITY, config.WEATHER_APPID))
     right_layout:add(sp)
