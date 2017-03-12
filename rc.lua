@@ -49,6 +49,14 @@ do
 end
 -- }}}
 
+local showDate = function  ()
+	naughty.notify({ 
+      text=os.date("%a, %H:%M "),
+      timeout = 5,
+      font = 'sans 20' }) 
+end
+
+
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("~/.config/awesome/theme/default/theme.lua")
@@ -215,6 +223,9 @@ vicious.register(mem_widget, vicious.widgets.mem, "RAM:$1%", 3)
 -- Create a textclock widget
 mytextclock = awful.widget.textclock()
 
+mytextclock:buttons(awful.util.table.join(
+    awful.button({ }, 1, showDate)
+))
 -- Create a wibox for each screen and add it
 mywibox = {
     sp, kbdwidget    
@@ -436,14 +447,14 @@ clientkeys = awful.util.table.join(
         awful.util.spawn("amixer set Front 0%") end),
   
     awful.key({ }, "XF86AudioRaiseVolume", function ()
-        awful.util.spawn("amixer set Front 7%+") end),
+        awful.util.spawn("amixer set Master 7%+") end),
     awful.key({ }, "XF86AudioLowerVolume", function ()
-        awful.util.spawn("amixer set Front 7%-") end),
+        awful.util.spawn("amixer set Master 7%-") end),
     
     awful.key({}, "Print", function() awful.util.spawn("scrot '~/screenshots/%Y-%m-%d-%H-%M-%S.png'") end ),
     -- скриншот активного окна
     awful.key({"Shift"}, "Print", function() awful.util.spawn("scrot -u '~/screenshots/window_%Y-%m-%d-%H-%M-S.png'") end ),
-    awful.key({ modkey,           }, "F1", function () naughty.notify({ 
+    awful.key({ modkey,           }, "F2", function () naughty.notify({ 
       text=[[
 google -- Mod+G
 PyCharm -- Mod+D
@@ -454,7 +465,10 @@ Front off -- Mod+Ctrl+0
 Master +25% -- Mod+Ctrl+=
 Master -25% -- Mod+Ctrl+-
 ]],
-      timeout = 5 }) end)
+      timeout = 5,
+      font = 'sans 18' }) end),
+
+    awful.key({ modkey,           }, "F1", showDate)
 
 )
 
@@ -638,7 +652,7 @@ run_once("kbdd")
 run_once("setxkbmap us,ru -option grp:alt_shift_toggle,grp_led:scroll")
 
 --set default values: master 100% front 0%
---awful.util.spawn("amixer set Master 100%")
+awful.util.spawn("amixer set Master 100%")
 --awful.util.spawn("amixer set Front 0%")
 
 -- awful.util.spawn("awsetbg -r /home/alex/wallpapers/")
